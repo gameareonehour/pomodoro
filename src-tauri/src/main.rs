@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    time_repeater_lib::run()
+    pomodoro_lib::run()
 }

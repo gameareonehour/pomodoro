@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [mode, setMode] = useState<"pomodoro" | "custom">("pomodoro");
+  const [mode, ] = useState<"pomodoro" | "custom">("pomodoro");
   const [work, setWork] = useState(30);
   const [shortBreak, setShortBreak] = useState(15);
   const [longBreak, setLongBreak] = useState(15);
@@ -20,9 +20,7 @@ function App() {
             <span className="mode-label">モード</span>
             <button
               className="mode-select"
-              onClick={() =>
-                setMode((m) => (m === "pomodoro" ? "custom" : "pomodoro"))
-              }
+              onClick={undefined}
             >
               <span className="mode-select-text">
                 {mode === "pomodoro" ? "ポモドーロ" : "カスタム"}

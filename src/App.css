@@ -165,7 +165,6 @@ body {
 
 /* 時間設定のカード部分 */
 .time-section {
-  margin-top: 10px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
