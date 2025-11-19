@@ -1,1 +1,1 @@
-export type View = "porodomo:standby" | "porodomo:working" | "porodomo:breaking"
+export type View = "porodomo:standby" | "porodomo:working" | "porodomo:breaking";

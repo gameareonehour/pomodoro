@@ -1,23 +1,30 @@
-import { Dispatch, FC, SetStateAction, useEffect } from "react";
-import { Background } from "../../../components/Background/Background"
+import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
+import { Background } from "../../../components/Background/Background";
 import { formatSessionStatus, nextView } from "../domain";
 import { formatTime } from "../../../utils";
 import { usePorodomo } from "../context";
 import { View } from "../../../types";
-import "./Breaking.css"
+import "./Breaking.css";
 import { invoke } from "@tauri-apps/api/core";
 
 export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
+  const isPlayedSound = useRef(false);
 
   const minutes = formatTime(Math.floor(state.remainingTime / 60));
   const seconds = formatTime(Math.round(state.remainingTime % 60));
 
-  invoke("debug_msg", { message: `json => ${JSON.stringify(state)}` })
+  useEffect(() => {
+    if (!isPlayedSound.current) {
+      isPlayedSound.current = true;
+      void invoke("play_sound", { soundType: "break" });
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (state.sessionStatus !== "shortBreak" && state.sessionStatus !== "longBreak") {
       if (state.sessionStatus === "done") {
+        void invoke("play_sound", { soundType: "done" });
         dispatch({ type: "endSession" });
       }
 
@@ -25,14 +32,14 @@ export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setV
       setView(next);
 
       return;
-    };
+    }
 
     const intervalId = setInterval(() => {
       dispatch({ type: "tick" });
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [state.sessionStatus])
+  }, [state.sessionStatus]);
 
   return (
     <Background>
@@ -46,14 +53,19 @@ export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setV
             <span className="session-value">
               <span>{state.currentSession}</span>
               <span className="icon session-value-division">
-                <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24"><path d="M7 21L14.9 3H17L9.1 21H7Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24">
+                  <path d="M7 21L14.9 3H17L9.1 21H7Z" />
+                </svg>
               </span>
               <span>{state.timerInputs.session}</span>
             </span>
 
             <span className="session-status">
               <span className="icon-main">
-                <svg xmlns="http://www.w3.org/2000/svg" width={36} height={36} viewBox="0 0 24 24"><title>coffee-outline</title><path d="M2,21V19H20V21H2M20,8V5H18V8H20M20,3A2,2 0 0,1 22,5V8A2,2 0 0,1 20,10H18V13A4,4 0 0,1 14,17H8A4,4 0 0,1 4,13V3H20M16,5H6V13A2,2 0 0,0 8,15H14A2,2 0 0,0 16,13V5Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width={36} height={36} viewBox="0 0 24 24">
+                  <title>coffee-outline</title>
+                  <path d="M2,21V19H20V21H2M20,8V5H18V8H20M20,3A2,2 0 0,1 22,5V8A2,2 0 0,1 20,10H18V13A4,4 0 0,1 14,17H8A4,4 0 0,1 4,13V3H20M16,5H6V13A2,2 0 0,0 8,15H14A2,2 0 0,0 16,13V5Z" />
+                </svg>
               </span>
               <span>{formatSessionStatus(state.sessionStatus)}</span>
             </span>
@@ -67,5 +79,5 @@ export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setV
         </div>
       </div>
     </Background>
-  )
-}
+  );
+};

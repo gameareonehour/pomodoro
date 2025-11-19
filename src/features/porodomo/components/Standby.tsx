@@ -3,16 +3,16 @@ import { formatTime, selectAll, validateTimerInput } from "../../../utils";
 import { Background } from "../../../components/Background/Background";
 import { View } from "../../../types";
 import { usePorodomo } from "../context";
-import "./Standby.css"
+import "./Standby.css";
 
 export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
 
-  const [mode, ] = useState<"pomodoro" | "countdown">("pomodoro");
-  const [working, setWorking] = useState(formatTime(state.timerInputs.working));
-  const [shortBreak, setShortBreak] = useState(formatTime(state.timerInputs.shortBreak));
-  const [longBreak, setLongBreak] = useState(formatTime(state.timerInputs.longBreak));
-  const [session, setSession] = useState(state.timerInputs.session);
+  const [mode] = useState<"pomodoro" | "countdown">("pomodoro");
+  const [working, setWorking] = useState(() => formatTime(state.timerInputs.working));
+  const [shortBreak, setShortBreak] = useState(() => formatTime(state.timerInputs.shortBreak));
+  const [longBreak, setLongBreak] = useState(() => formatTime(state.timerInputs.longBreak));
+  const [session, setSession] = useState(() => state.timerInputs.session);
 
   const startSession = () => {
     dispatch({
@@ -21,12 +21,12 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
         working: parseInt(working),
         shortBreak: parseInt(shortBreak),
         longBreak: parseInt(longBreak),
-        session: session
-      }
-    })
+        session: session,
+      },
+    });
 
     setView("porodomo:working");
-  }
+  };
 
   return (
     <Background>
@@ -37,10 +37,7 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
         {/* mode selector */}
         <div className="mode-section">
           <span className="mode-label">モード</span>
-          <button
-            className="mode-select"
-            onClick={undefined}
-          >
+          <button className="mode-select" onClick={undefined}>
             <span className="mode-select-text">
               {mode === "pomodoro" ? "ポモドーロ" : "カスタム"}
             </span>
@@ -63,9 +60,9 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
               value={working}
               onClick={selectAll}
               onChange={(e) => {
-                const validated = validateTimerInput(e.target.value)
+                const validated = validateTimerInput(e.target.value);
                 if (validated === false) {
-                  return
+                  return;
                 }
                 setWorking(validated);
               }}
@@ -80,9 +77,9 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
               value={shortBreak}
               onClick={selectAll}
               onChange={(e) => {
-                const validated = validateTimerInput(e.target.value)
+                const validated = validateTimerInput(e.target.value);
                 if (validated === false) {
-                  return
+                  return;
                 }
                 setShortBreak(validated);
               }}
@@ -96,9 +93,9 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
               value={longBreak}
               onClick={selectAll}
               onChange={(e) => {
-                const validated = validateTimerInput(e.target.value)
+                const validated = validateTimerInput(e.target.value);
                 if (validated === false) {
-                  return
+                  return;
                 }
                 setLongBreak(validated);
               }}
@@ -108,10 +105,16 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
         {/* session + bottom controls */}
         <div className="session-input">
           <div className="bottom-row">
-            <button className="circle-play-button" aria-label="スタート" onClick={() => startSession()}>
+            <button
+              className="circle-play-button"
+              aria-label="スタート"
+              onClick={() => startSession()}
+            >
               <span className="play-icon" />
             </button>
-            <span style={{display: "flex", flexDirection: "column", alignItems: "center", gap: "3px"}}>
+            <span
+              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}
+            >
               <span className="session-input-label">セッション</span>
               <button
                 className="circle-counter-button"
@@ -124,5 +127,5 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
         </div>
       </div>
     </Background>
-  )
-}
+  );
+};

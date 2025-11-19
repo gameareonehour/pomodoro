@@ -1,16 +1,25 @@
-import { Dispatch, FC, SetStateAction, useEffect } from "react";
-import { Background } from "../../../components/Background/Background"
+import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
+import { Background } from "../../../components/Background/Background";
 import { formatSessionStatus, nextView } from "../domain";
 import { formatTime } from "../../../utils";
 import { usePorodomo } from "../context";
 import { View } from "../../../types";
-import "./Working.css"
+import { invoke } from "@tauri-apps/api/core";
+import "./Working.css";
 
 export const Working: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
+  const isPlayedSound = useRef(false);
 
   const minutes = formatTime(Math.floor(state.remainingTime / 60));
   const seconds = formatTime(Math.round(state.remainingTime % 60));
+
+  useEffect(() => {
+    if (!isPlayedSound.current) {
+      isPlayedSound.current = true;
+      void invoke("play_sound", { soundType: "working" });
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (state.sessionStatus !== "working") {
@@ -18,14 +27,14 @@ export const Working: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
       setView(next);
 
       return;
-    };
+    }
 
     const intervalId = setInterval(() => {
       dispatch({ type: "tick" });
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [state.sessionStatus])
+  }, [state.sessionStatus]);
 
   return (
     <Background>
@@ -39,7 +48,9 @@ export const Working: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
             <span className="session-value">
               <span>{state.currentSession}</span>
               <span className="icon session-value-division">
-                <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24"><path d="M7 21L14.9 3H17L9.1 21H7Z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24">
+                  <path d="M7 21L14.9 3H17L9.1 21H7Z" />
+                </svg>
               </span>
               <span>{state.timerInputs.session}</span>
             </span>
@@ -62,5 +73,5 @@ export const Working: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
         </div>
       </div>
     </Background>
-  )
-}
+  );
+};

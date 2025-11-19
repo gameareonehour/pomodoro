@@ -12,72 +12,73 @@ export const formatSessionStatus = (status: SessionStatus): string => {
     default:
       return "作業中";
   }
-}
+};
 
 export const nextSessionStatus = (
   sessionStatus: SessionStatus,
   sessionCount: number,
-  maxSessionCount: number
+  maxSessionCount: number,
 ): SessionStatus => {
   switch (sessionStatus) {
     case "working":
       if (sessionCount === maxSessionCount) {
-        return "longBreak"
+        return "longBreak";
       } else {
-        return "shortBreak"
+        return "shortBreak";
       }
     case "shortBreak":
-      return "working" 
+      return "working";
     case "longBreak":
-      return "done"
+      return "done";
     default:
-      return "working"
+      return "working";
   }
-}
+};
 
-export const nextView = (
-  nextSession: SessionStatus,
-): View => {
+export const nextView = (nextSession: SessionStatus): View => {
   switch (nextSession) {
     case "working":
-      return "porodomo:working"
+      return "porodomo:working";
     case "shortBreak":
-      return "porodomo:breaking"
+      return "porodomo:breaking";
     case "longBreak":
-      return "porodomo:breaking"
+      return "porodomo:breaking";
     case "done":
-      return "porodomo:standby"
+      return "porodomo:standby";
     default:
-      return "porodomo:working"
+      return "porodomo:working";
   }
-}
+};
 
 export const nextSessionCount = (session: number, nextSession: SessionStatus): number => {
   switch (nextSession) {
     case "standby":
-      return session
+      return session;
     case "working":
-      return session + 1
+      return session + 1;
     case "shortBreak":
-      return session
+      return session;
     case "longBreak":
-      return session
+      return session;
     case "done":
-      return session + 1
+      return session + 1;
   }
-}
+};
 
-export const nextSessionRemainingTime = (nextSession: SessionStatus, timerInputs: TimerInput): number => {
+export const nextSessionRemainingTime = (
+  nextSession: SessionStatus,
+  timerInputs: TimerInput,
+): number => {
   switch (nextSession) {
     case "standby":
-      return 0
+      return 0;
     case "working":
-      return timerInputs.working * 60
+      return timerInputs.working * 60;
     case "shortBreak":
-      return timerInputs.shortBreak * 60
+      return timerInputs.shortBreak * 60;
     case "longBreak":
-      return timerInputs.longBreak * 60
+      return timerInputs.longBreak * 60;
     case "done":
-      return 0
+      return 0;
   }
-}
+};

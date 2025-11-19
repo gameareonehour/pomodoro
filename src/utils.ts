@@ -15,12 +15,12 @@ export const validateTimerInput = (nextValue: string): false | string => {
 
   // 3桁以上の数値は不正な値.
   if (numericDigits > timerInput.maxDigits) {
-    return false
+    return false;
   }
 
   // 値が0の場合は値を1に修正する.
   if (numericNextValue === 0) {
-    return "01"
+    return "01";
   }
 
   // 値が1桁の場合は頭を0埋めする.
@@ -29,16 +29,16 @@ export const validateTimerInput = (nextValue: string): false | string => {
   }
 
   // 既に頭に"0"がついているケースを考慮し、整数の値を返す.
-  return numericNextValue.toString()
-}
+  return numericNextValue.toString();
+};
 
 export const formatTime = (value: number): string => {
   const numericDigits = value.toString().length;
 
-    // 値が1桁の場合は頭を0埋めする.
+  // 値が1桁の場合は頭を0埋めする.
   if (!(numericDigits >= timerInput.maxDigits)) {
     return value.toString().padStart(2, "0");
   }
 
-  return value.toString()
-}
+  return value.toString();
+};
