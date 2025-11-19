@@ -1,17 +1,35 @@
 import { Dispatch, FC, SetStateAction, useState } from "react";
-import { selectAll, validateTimerInput } from "../../utils";
-import { Timer } from "../../components/Timer/Timer";
-import { View } from "../../types";
+import { formatTime, selectAll, validateTimerInput } from "../../../utils";
+import { Background } from "../../../components/Background/Background";
+import { View } from "../../../types";
+import { usePorodomo } from "../context";
+import "./Standby.css"
 
 export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
-  const [mode, ] = useState<"pomodoro" | "custom">("pomodoro");
-  const [work, setWork] = useState("60");
-  const [shortBreak, setShortBreak] = useState("5");
-  const [longBreak, setLongBreak] = useState("15");
-  const [session, setSession] = useState(2);
+  const { state, dispatch } = usePorodomo();
+
+  const [mode, ] = useState<"pomodoro" | "countdown">("pomodoro");
+  const [working, setWorking] = useState(formatTime(state.timerInputs.working));
+  const [shortBreak, setShortBreak] = useState(formatTime(state.timerInputs.shortBreak));
+  const [longBreak, setLongBreak] = useState(formatTime(state.timerInputs.longBreak));
+  const [session, setSession] = useState(state.timerInputs.session);
+
+  const startSession = () => {
+    dispatch({
+      type: "init",
+      value: {
+        working: parseInt(working),
+        shortBreak: parseInt(shortBreak),
+        longBreak: parseInt(longBreak),
+        session: session
+      }
+    })
+
+    setView("porodomo:working");
+  }
 
   return (
-    <Timer>
+    <Background>
       <div className="timer-circle-border" />
       <div className="timer-top-knob" />
 
@@ -34,6 +52,7 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
             </span>
           </button>
         </div>
+
         {/* time blocks */}
         <div className="time-section">
           <div className="time-card">
@@ -41,14 +60,14 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
             <input
               className="timer-input"
               type="number"
-              value={work}
+              value={working}
               onClick={selectAll}
               onChange={(e) => {
                 const validated = validateTimerInput(e.target.value)
                 if (validated === false) {
                   return
                 }
-                setWork(validated);
+                setWorking(validated);
               }}
             />
           </div>
@@ -87,13 +106,13 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
           </div>
         </div>
         {/* session + bottom controls */}
-        <div className="session-section">
+        <div className="session-input">
           <div className="bottom-row">
-            <button className="circle-play-button" aria-label="スタート" onClick={() => setView("porodomo:working")}>
+            <button className="circle-play-button" aria-label="スタート" onClick={() => startSession()}>
               <span className="play-icon" />
             </button>
             <span style={{display: "flex", flexDirection: "column", alignItems: "center", gap: "3px"}}>
-              <span className="session-label">セッション</span>
+              <span className="session-input-label">セッション</span>
               <button
                 className="circle-counter-button"
                 onClick={() => setSession((s) => (s >= 5 ? 1 : s + 1))}
@@ -104,6 +123,6 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
           </div>
         </div>
       </div>
-    </Timer>
+    </Background>
   )
 }

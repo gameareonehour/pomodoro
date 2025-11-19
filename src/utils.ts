@@ -31,3 +31,14 @@ export const validateTimerInput = (nextValue: string): false | string => {
   // 既に頭に"0"がついているケースを考慮し、整数の値を返す.
   return numericNextValue.toString()
 }
+
+export const formatTime = (value: number): string => {
+  const numericDigits = value.toString().length;
+
+    // 値が1桁の場合は頭を0埋めする.
+  if (!(numericDigits >= timerInput.maxDigits)) {
+    return value.toString().padStart(2, "0");
+  }
+
+  return value.toString()
+}

@@ -1,9 +1,10 @@
 import { FC, ReactNode } from "react"
+import "./Background.css"
 
-export const Timer: FC<{ children: ReactNode }> = ({ children }) => {
+export const Background: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div className="app-root" data-tauri-drag-region>
-      <div className="timer-circle">
+      <div className="background">
         {children}
       </div>
     </div>

@@ -1,0 +1,27 @@
+.app-root {
+  -webkit-app-region: drag;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+}
+
+/* 円形コンテナ全体 */
+.background {
+  position: relative;
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.75) 0, transparent 0%),
+    radial-gradient(circle at bottom, rgba(0, 0, 0, 0.75) 0, rgba(0, 0, 0, 0.75) 55%);
+  box-shadow: var(--shadow-soft);
+  z-index: 1;
+}
