@@ -4,8 +4,8 @@ import { formatSessionStatus, nextView } from "../domain";
 import { formatTime } from "../../../utils";
 import { usePorodomo } from "../context";
 import { View } from "../../../types";
-import "./Breaking.css";
 import { invoke } from "@tauri-apps/api/core";
+import "./Breaking.css";
 
 export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
@@ -43,8 +43,8 @@ export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setV
 
   return (
     <Background>
-      <div className="timer-circle-border" />
-      <div className="timer-top-knob" />
+      <div className="timer-border-line" />
+      <div className="timer-pointer" />
 
       <div className="timer-content">
         <div className="align">

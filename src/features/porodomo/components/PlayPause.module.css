@@ -1,0 +1,11 @@
+.playPause {
+  margin-bottom: -24px;
+  padding: 12px;
+  background: #111827;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

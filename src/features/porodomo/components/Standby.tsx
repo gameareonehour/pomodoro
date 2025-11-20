@@ -1,9 +1,9 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
 import { formatTime, selectAll, validateTimerInput } from "../../../utils";
 import { Background } from "../../../components/Background/Background";
 import { View } from "../../../types";
 import { usePorodomo } from "../context";
-import "./Standby.css";
+import styles from "./Standby.module.css";
 
 export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
@@ -13,6 +13,30 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
   const [shortBreak, setShortBreak] = useState(() => formatTime(state.timerInputs.shortBreak));
   const [longBreak, setLongBreak] = useState(() => formatTime(state.timerInputs.longBreak));
   const [session, setSession] = useState(() => state.timerInputs.session);
+
+  const onChangeWorking = (e: ChangeEvent<HTMLInputElement>) => {
+    const validated = validateTimerInput(e.target.value);
+    if (validated === false) {
+      return;
+    }
+    setWorking(validated);
+  };
+
+  const onChangeShortBreak = (e: ChangeEvent<HTMLInputElement>) => {
+    const validated = validateTimerInput(e.target.value);
+    if (validated === false) {
+      return;
+    }
+    setShortBreak(validated);
+  };
+
+  const onChangeLongBreak = (e: ChangeEvent<HTMLInputElement>) => {
+    const validated = validateTimerInput(e.target.value);
+    if (validated === false) {
+      return;
+    }
+    setLongBreak(validated);
+  };
 
   const startSession = () => {
     dispatch({
@@ -30,19 +54,18 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
 
   return (
     <Background>
-      <div className="timer-circle-border" />
-      <div className="timer-top-knob" />
+      <div className="timer-border-line" />
+      <div className="timer-pointer" />
 
       <div className="timer-content">
-        {/* mode selector */}
-        <div className="mode-section">
-          <span className="mode-label">モード</span>
-          <button className="mode-select" onClick={undefined}>
-            <span className="mode-select-text">
-              {mode === "pomodoro" ? "ポモドーロ" : "カスタム"}
+        <div className={styles.modeSelection}>
+          <span className={styles.modeLabel}>モード</span>
+          <button className={styles.modeSelect} onClick={undefined}>
+            <span className={styles.modeSelectText}>
+              {mode === "pomodoro" ? "ポモドーロ" : "カウントダウン"}
             </span>
-            <span className="mode-select-chevron">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <span className={styles.modeSelectChevron}>
+              <svg xmlns="http://www.w3.org/2000/svg" width={24} height={24} viewBox="0 0 24 24">
                 <title>chevron-down</title>
                 <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
               </svg>
@@ -50,74 +73,55 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
           </button>
         </div>
 
-        {/* time blocks */}
-        <div className="time-section">
-          <div className="time-card">
-            <span className="time-card-label">作業</span>
+        <div className={styles.timerSection}>
+          <div className={styles.timeField}>
+            <span className={styles.timeLabel}>作業</span>
             <input
-              className="timer-input"
+              className={styles.timeInput}
               type="number"
               value={working}
               onClick={selectAll}
-              onChange={(e) => {
-                const validated = validateTimerInput(e.target.value);
-                if (validated === false) {
-                  return;
-                }
-                setWorking(validated);
-              }}
+              onChange={onChangeWorking}
             />
           </div>
-          <div className="time-card-divider">/</div>
-          <div className="time-card">
-            <span className="time-card-label">休憩</span>
+          <div className={styles.timeFieldDivider}>/</div>
+          <div className={styles.timeField}>
+            <span className={styles.timeLabel}>休憩</span>
             <input
-              className="timer-input"
+              className={styles.timeInput}
               type="number"
               value={shortBreak}
               onClick={selectAll}
-              onChange={(e) => {
-                const validated = validateTimerInput(e.target.value);
-                if (validated === false) {
-                  return;
-                }
-                setShortBreak(validated);
-              }}
+              onChange={onChangeShortBreak}
             />
           </div>
-          <div className="time-card">
-            <span className="time-card-label">長休憩</span>
+          <div className={styles.timeField}>
+            <span className={styles.timeLabel}>長休憩</span>
             <input
-              className="timer-input"
+              className={styles.timeInput}
               type="number"
               value={longBreak}
               onClick={selectAll}
-              onChange={(e) => {
-                const validated = validateTimerInput(e.target.value);
-                if (validated === false) {
-                  return;
-                }
-                setLongBreak(validated);
-              }}
+              onChange={onChangeLongBreak}
             />
           </div>
         </div>
-        {/* session + bottom controls */}
-        <div className="session-input">
-          <div className="bottom-row">
-            <button
-              className="circle-play-button"
-              aria-label="スタート"
+
+        <div className={styles.sessionControls}>
+          <div className={styles.sessionControlOuter}>
+            <span
+              className={`icon-main ${styles.sessionStartButton}`}
               onClick={() => startSession()}
             >
-              <span className="play-icon" />
-            </button>
-            <span
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}
-            >
-              <span className="session-input-label">セッション</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width={38} height={38} viewBox="0 0 24 24">
+                <title>play</title>
+                <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
+              </svg>
+            </span>
+            <span className={styles.sessionInputOuter}>
+              <span className={styles.sessionInputLabel}>セッション</span>
               <button
-                className="circle-counter-button"
+                className={styles.circleCounterButton}
                 onClick={() => setSession((s) => (s >= 5 ? 1 : s + 1))}
               >
                 {session}

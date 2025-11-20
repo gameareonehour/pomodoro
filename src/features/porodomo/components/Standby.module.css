@@ -1,18 +1,18 @@
 /* モードセクション */
-.mode-section {
+.modeSelection {
   display: flex;
   flex-direction: column;
   gap: 8px;
   align-items: center;
 }
 
-.mode-label {
+.modeLabel {
   font-size: 13px;
   letter-spacing: 0.12em;
   color: var(--text-sub);
 }
 
-.mode-select {
+.modeSelect {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -26,38 +26,31 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
-.mode-select:hover {
+.modeSelect:hover {
   background: rgba(55, 65, 105, 0.98);
 }
 
-.mode-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, #ffffff 0, #ffe3a7 35%, #ffb5c0 80%);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
-}
-
-.mode-select-text {
+.modeSelectText {
   white-space: nowrap;
+  font-size: 14.5px;
 }
 
-.mode-select-chevron {
-  margin-left: 4px;
+.modeSelectChevron {
+  margin-top: 4px;
   font-size: 12px;
   fill: white;
   opacity: 0.85;
 }
 
-/* 時間設定のカード部分 */
-.time-section {
+/* 時間設定 */
+.timerSection {
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 16px;
 }
 
-.time-card {
+.timeField {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,19 +58,19 @@
   gap: 6px;
 }
 
-.time-card-label {
+.timeLabel {
   font-size: 12px;
   color: var(--text-sub);
 }
 
-.timer-input {
+.timeInput {
   width: 80px;
   padding: 10px 14px;
   border-radius: 12px;
   border: none;
   background: var(--bg-card);
   color: var(--text-main);
-  font-size: 42px;
+  font-size: 44px;
   font-weight: 400;
   letter-spacing: 0.2rem;
   text-align: center;
@@ -87,27 +80,22 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
 }
 
-.time-card-divider {
+.timeFieldDivider {
   font-size: 52px;
   font-weight: 100;
   color: rgba(255, 255, 255, 0.65);
   margin-bottom: 4px;
 }
 
-/* セッション + 下部ボタン */
-.session-input {
+/* セッション */
+.sessionControls {
   display: flex;
   flex-direction: column;
   align-items: end;
   gap: 12px;
 }
 
-.session-input-label {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-.bottom-row {
+.sessionControlOuter {
   width: 60%;
   display: flex;
   align-items: flex-end;
@@ -115,10 +103,20 @@
   gap: 32px;
 }
 
+.sessionInputLabel {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.sessionInputOuter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
 /* 丸ボタン共通 */
-.circle-icon-button,
-.circle-play-button,
-.circle-counter-button {
+.circleCounterButton {
   width: 52px;
   height: 52px;
   border-radius: 50%;
@@ -134,12 +132,7 @@
     background 0.12s ease-out;
 }
 
-.circle-icon-button {
-  background: var(--bg-card);
-  color: var(--text-main);
-}
-
-.circle-counter-button {
+.circleCounterButton {
   width: 48px;
   height: 48px;
   background: rgba(255, 255, 255, 0.13);
@@ -148,30 +141,15 @@
   font-weight: 400;
 }
 
-/* 再生ボタンは白地 */
-.circle-play-button {
-  margin-bottom: -14px;
-  height: 72px;
-  width: 72px;
-  background: #111827;
-  color: #fff;
-  border: 3px solid white;
-}
-
-.circle-icon-button:hover,
-.circle-play-button:hover,
-.circle-counter-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85);
-}
-
 /* 再生アイコン */
-.play-icon {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 12px 0 12px 20px;
-  border-radius: 3px;
-  border-color: transparent transparent transparent white;
-  margin-left: 3px;
+.sessionStartButton {
+  margin-bottom: -24px;
+  padding: 12px;
+  background: #111827;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }

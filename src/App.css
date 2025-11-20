@@ -6,7 +6,7 @@
   --bg-chip: rgba(40, 48, 70, 0.95);
   --bg-card: rgba(122, 120, 126, 0.75);
   --text-main: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-secondary: rgba(255, 255, 255, 0.825);
   --text-sub: rgba(255, 255, 255, 0.6);
   --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.65);
   --blur-amount: 16px;
@@ -42,16 +42,16 @@ input:focus {
   caret-color: transparent;
 }
 
-.icon {
-  fill: var(--text-sub);
-}
-
 .icon-main {
   fill: var(--text-secondary);
 }
 
-/* 白い円のフチ */
-.timer-circle-border {
+.icon {
+  fill: var(--text-sub);
+}
+
+/* 円周の進捗ライン */
+.timer-border-line {
   position: absolute;
   inset: 10px;
   border-radius: 50%;
@@ -62,8 +62,8 @@ input:focus {
   pointer-events: none;
 }
 
-/* 上部の小さなノブ */
-.timer-top-knob {
+/* タイムポインター */
+.timer-pointer {
   position: absolute;
   top: 6px;
   left: 50%;

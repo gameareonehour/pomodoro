@@ -2,12 +2,12 @@ import type { Dispatch, ReactNode } from "react";
 import { createContext, useContext, useReducer } from "react";
 import { initialState, PorodomoAction, PorodomoState, reducer } from "./reducer";
 
-export type PorodomoContextValue = {
+type PorodomoContextValue = {
   state: PorodomoState;
   dispatch: Dispatch<PorodomoAction>;
 };
 
-export const PorodomoContext = createContext<PorodomoContextValue | undefined>(undefined);
+const PorodomoContext = createContext<PorodomoContextValue | undefined>(undefined);
 
 type PorodomoProviderProps = {
   children: ReactNode;

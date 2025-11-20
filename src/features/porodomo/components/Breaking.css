@@ -14,12 +14,12 @@
 .session-label {
   font-size: 18px;
   letter-spacing: 0.03em;
-  color: var(--text-sub);
+  color: var(--text-secondary);
 }
 
 .session-value {
   font-size: 16px;
-  color: var(--text-sub);
+  color: var(--text-secondary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,7 +46,7 @@
   justify-content: center;
   gap: 10px;
   letter-spacing: 0.03em;
-  font-size: 82px;
+  font-size: 92px;
 }
 
 .remaining-time-divider {

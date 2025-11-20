@@ -1,6 +1,5 @@
 import { SessionStatus, TimerInput, TimerState } from "./types";
 import { nextSessionCount, nextSessionRemainingTime, nextSessionStatus } from "./domain";
-import { invoke } from "@tauri-apps/api/core";
 
 export type PorodomoState = {
   timerInputs: TimerInput;
@@ -32,7 +31,8 @@ export type PorodomoAction =
       type: "tick";
     }
   | {
-      type: "playSound";
+      type: "updateTimer";
+      value: TimerState;
     }
   | {
       type: "skipSession";
@@ -64,18 +64,25 @@ export function reducer(state: PorodomoState, action: PorodomoAction): PorodomoS
         );
 
         const session = nextSessionCount(state.currentSession, nextSession);
+        const remainingTime = nextSessionRemainingTime(nextSession, state.timerInputs);
+
         return {
           ...state,
           sessionStatus: nextSession,
           timerStatus: "running",
           currentSession: session,
-          remainingTime: nextSessionRemainingTime(nextSession, state.timerInputs),
+          remainingTime: remainingTime,
         };
       }
 
       return {
         ...state,
         remainingTime: state.remainingTime - 1,
+      };
+    case "updateTimer":
+      return {
+        ...state,
+        timerStatus: action.value,
       };
     case "skipSession": {
       const nextSession = nextSessionStatus(
@@ -84,12 +91,15 @@ export function reducer(state: PorodomoState, action: PorodomoAction): PorodomoS
         state.timerInputs.session,
       );
 
+      const remainingTime = nextSessionRemainingTime(nextSession, state.timerInputs);
+      const session = nextSessionCount(state.currentSession, nextSession);
+
       return {
         ...state,
         sessionStatus: nextSession,
         timerStatus: "running",
-        currentSession: state.currentSession + 1,
-        remainingTime: nextSessionRemainingTime(nextSession, state.timerInputs),
+        currentSession: session,
+        remainingTime: remainingTime,
       };
     }
     case "endSession":
