@@ -13,12 +13,13 @@
     "windows": [
       {
         "title": "pomodoro",
-        "width": 600,
-        "height": 600,
+        "width": 500,
+        "height": 500,
         "transparent": true,
         "decorations": false,
         "shadow": false,
-        "alwaysOnTop": true
+        "alwaysOnTop": true,
+        "maximizable": false
       }
     ],
     "security": {
@@ -34,6 +35,7 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "resources": ["assets/*.wav"]
   }
 }

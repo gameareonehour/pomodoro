@@ -1,38 +1,23 @@
-/* :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  color: #0f0f0f;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-.container {
-  border-radius: 50%;
-  height: 500px;
-  width: 500px;
-  background-color: #f3f3f3;
-  -webkit-app-region: drag;
-} */
 :root {
   --circle-size: 420px;
   --accent: #ffffff;
   --accent-soft: rgba(255, 255, 255, 0.25);
-  --bg-inner: rgba(20, 25, 40, 0.9);
+  --bg-inner: rgba(20, 25, 40, 0.8);
   --bg-chip: rgba(40, 48, 70, 0.95);
   --bg-card: rgba(122, 120, 126, 0.75);
   --text-main: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.825);
   --text-sub: rgba(255, 255, 255, 0.6);
   --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.65);
   --blur-amount: 16px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Hiragino Sans", "Noto Sans JP", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Hiragino Sans",
+    "Noto Sans JP",
+    sans-serif;
 }
 
 *,
@@ -46,47 +31,39 @@ body {
   color: var(--text-main);
 }
 
-.app-root {
-  -webkit-app-region: drag;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  padding: 24px;
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* 円形コンテナ全体 */
-.timer-circle {
-  position: relative;
-  width: var(--circle-size);
-  height: var(--circle-size);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(var(--blur-amount));
-  -webkit-backdrop-filter: blur(var(--blur-amount));
-  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.06) 0, transparent 55%),
-    radial-gradient(circle at bottom, rgba(0, 0, 0, 0.6) 0, rgba(0, 0, 0, 0.9) 55%);
-  box-shadow: var(--shadow-soft);
-  z-index: 1;
+input:focus {
+  outline: none;
+  caret-color: transparent;
 }
 
-/* 白い円のフチ */
-.timer-circle-border {
+.icon-main {
+  fill: var(--text-secondary);
+}
+
+.icon {
+  fill: var(--text-sub);
+}
+
+/* 円周の進捗ライン */
+.timer-border-line {
   position: absolute;
   inset: 10px;
   border-radius: 50%;
   border: 6px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3),
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.3),
     0 12px 40px rgba(0, 0, 0, 0.7);
   pointer-events: none;
 }
 
-/* 上部の小さなノブ */
-.timer-top-knob {
+/* タイムポインター */
+.timer-pointer {
   position: absolute;
   top: 6px;
   left: 50%;
@@ -95,7 +72,8 @@ body {
   height: 18px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25),
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.25),
     0 10px 25px rgba(0, 0, 0, 0.6);
 }
 
@@ -110,184 +88,4 @@ body {
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-}
-
-/* モードセクション */
-.mode-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-}
-
-.mode-label {
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  color: var(--text-sub);
-}
-
-.mode-select {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 999px;
-  border: none;
-  background: var(--bg-chip);
-  color: var(--text-main);
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-}
-
-.mode-select:hover {
-  background: rgba(55, 65, 105, 0.98);
-}
-
-.mode-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, #ffffff 0, #ffe3a7 35%, #ffb5c0 80%);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
-}
-
-.mode-select-text {
-  white-space: nowrap;
-}
-
-.mode-select-chevron {
-  margin-left: 4px;
-  font-size: 12px;
-  fill: white;
-  opacity: 0.85;
-}
-
-/* 時間設定のカード部分 */
-.time-section {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 16px;
-}
-
-.time-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 76px;
-  gap: 6px;
-}
-
-.time-card-label {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-.time-card-value {
-  min-width: 70px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: none;
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 42px;
-  font-weight: 400;
-  letter-spacing: 0.2rem;
-  text-align: center;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-}
-
-.time-card-value:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.time-card-divider {
-  font-size: 52px;
-  font-weight: 100;
-  color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 4px;
-}
-
-/* セッション + 下部ボタン */
-.session-section {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  gap: 12px;
-}
-
-.session-label {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-.bottom-row {
-  width: 60%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: start;
-  gap: 32px;
-}
-
-/* 丸ボタン共通 */
-.circle-icon-button,
-.circle-play-button,
-.circle-counter-button {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out,
-    background 0.12s ease-out;
-}
-
-.circle-icon-button {
-  background: var(--bg-card);
-  color: var(--text-main);
-}
-
-.circle-counter-button {
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.13);
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: 400;
-}
-
-/* 再生ボタンは白地 */
-.circle-play-button {
-  margin-bottom: -14px;
-  height: 72px;
-  width: 72px;
-  background: #111827;
-  color: #fff;
-  border: 3px solid white;
-}
-
-.circle-icon-button:hover,
-.circle-play-button:hover,
-.circle-counter-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85);
-}
-
-/* 再生アイコン */
-.play-icon {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 12px 0 12px 20px;
-  border-radius: 3px;
-  border-color: transparent transparent transparent white;
-  margin-left: 3px;
 }
