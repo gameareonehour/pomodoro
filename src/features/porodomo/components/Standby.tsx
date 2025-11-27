@@ -1,9 +1,12 @@
 import { ChangeEvent, Dispatch, FC, SetStateAction, useState } from "react";
-import { formatTime, selectAll, validateTimerInput } from "../../../utils";
+import { formatTime, selectAll, validateTimerInput } from "../../../shared";
 import { Background } from "../../../components/Background/Background";
 import { View } from "../../../types";
 import { usePorodomo } from "../context";
+import { Timeline } from "../../../components/Timeline/Timeline";
+import { Inner } from "../../../components/Inner/Inner";
 import styles from "./Standby.module.css";
+import { Icon } from "../../../components/Icon/Icon";
 
 export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
@@ -54,10 +57,13 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
 
   return (
     <Background>
-      <div className="timer-border-line" />
-      <div className="timer-pointer" />
+      <Timeline
+        angle={0}
+        timerStatus={state.timerStatus}
+        sessionStatus={state.sessionStatus}
+      />
 
-      <div className="timer-content">
+      <Inner>
         <div className={styles.modeSelection}>
           <span className={styles.modeLabel}>モード</span>
           <button className={styles.modeSelect} onClick={undefined}>
@@ -110,13 +116,10 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
         <div className={styles.sessionControls}>
           <div className={styles.sessionControlOuter}>
             <span
-              className={`icon-main ${styles.sessionStartButton}`}
+              className={styles.sessionStartButton}
               onClick={() => startSession()}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width={38} height={38} viewBox="0 0 24 24">
-                <title>play</title>
-                <path d="M8,5.14V19.14L19,12.14L8,5.14Z" />
-              </svg>
+              <Icon type={"play"} width={38} height={38} main />
             </span>
             <span className={styles.sessionInputOuter}>
               <span className={styles.sessionInputLabel}>セッション</span>
@@ -129,7 +132,7 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
             </span>
           </div>
         </div>
-      </div>
+      </Inner>
     </Background>
   );
 };

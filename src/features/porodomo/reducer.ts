@@ -1,10 +1,10 @@
-import { SessionStatus, TimerInput, TimerState } from "./types";
+import { SessionStatus, TimerInput, TimerStatus } from "./types";
 import { nextSessionCount, nextSessionRemainingTime, nextSessionStatus } from "./domain";
 
 export type PorodomoState = {
   timerInputs: TimerInput;
   sessionStatus: SessionStatus;
-  timerStatus: TimerState;
+  timerStatus: TimerStatus;
   currentSession: number;
   remainingTime: number;
 };
@@ -32,7 +32,7 @@ export type PorodomoAction =
     }
   | {
       type: "updateTimer";
-      value: TimerState;
+      value: TimerStatus;
     }
   | {
       type: "skipSession";

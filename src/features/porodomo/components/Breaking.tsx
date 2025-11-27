@@ -1,18 +1,59 @@
-import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef } from "react";
 import { Background } from "../../../components/Background/Background";
 import { formatSessionStatus, nextView } from "../domain";
-import { formatTime } from "../../../utils";
+import { formatTime } from "../../../shared";
 import { usePorodomo } from "../context";
 import { View } from "../../../types";
 import { invoke } from "@tauri-apps/api/core";
-import "./Breaking.css";
+import { PlayPause } from "./PlayPause";
+import { Timeline } from "../../../components/Timeline/Timeline";
+import { Inner } from "../../../components/Inner/Inner";
+import { Icon } from "../../../components/Icon/Icon";
+import styles from "./Breaking.module.css";
 
 export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
   const { state, dispatch } = usePorodomo();
   const isPlayedSound = useRef(false);
+  const intervalId = useRef<number | null>(null);
 
-  const minutes = formatTime(Math.floor(state.remainingTime / 60));
-  const seconds = formatTime(Math.round(state.remainingTime % 60));
+  const minutes = useMemo(() => {
+    return formatTime(Math.floor(state.remainingTime / 60));
+  }, [state.remainingTime]);
+
+  const seconds = useMemo(() => {
+    return formatTime(Math.round(state.remainingTime % 60));
+  }, [state.remainingTime]);
+
+  const sessionStatus = useMemo(() => {
+    return formatSessionStatus(state.sessionStatus);
+  }, [state.sessionStatus]);
+
+  const controls = useMemo(() => {
+    if (state.timerStatus === "running") {
+      return "pause";
+    } else {
+      return "play";
+    }
+  }, [state.timerStatus]);
+
+  const play = () => {
+    dispatch({ type: "updateTimer", value: "running" });
+  };
+
+  const pause = () => {
+    dispatch({ type: "updateTimer", value: "paused" });
+  };
+
+  const discardSession = () => {
+    void invoke("play_sound", { soundType: "done" });
+
+    dispatch({ type: "endSession" });
+    setView("porodomo:standby");
+  };
+
+  const skipSession = () => {
+    dispatch({ type: "skipSession" });
+  };
 
   useEffect(() => {
     if (!isPlayedSound.current) {
@@ -34,50 +75,97 @@ export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setV
       return;
     }
 
-    const intervalId = setInterval(() => {
+    intervalId.current = setInterval(() => {
       dispatch({ type: "tick" });
     }, 1000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      if (intervalId.current) {
+        clearInterval(intervalId.current);
+      }
+    };
   }, [state.sessionStatus]);
+
+  useEffect(() => {
+    if (state.timerStatus === "paused" && intervalId.current) {
+      clearInterval(intervalId.current);
+      intervalId.current = null;
+      return;
+    }
+
+    if (state.timerStatus === "running" && !intervalId.current) {
+      intervalId.current = setInterval(() => {
+        dispatch({ type: "tick" });
+      }, 1000);
+    }
+  }, [state.timerStatus]);
+
+  const angle = useMemo(() => {
+    // 作業完了の場合、ポインターの位置は360.
+    if (state.sessionStatus !== "shortBreak" && state.sessionStatus !== "longBreak") {
+      return 360;
+    }
+
+    const totalTime = state.sessionStatus === "shortBreak" ? state.timerInputs.shortBreak * 60 : state.sessionStatus === "longBreak" ? state.timerInputs.longBreak * 60 : 0;
+
+    // 作業開始の場合、ポインターの位置は0.
+    if (state.remainingTime === totalTime) {
+      return 0;
+    }
+
+    const elapsedTime = totalTime - state.remainingTime;
+    const progress = elapsedTime / totalTime;
+
+    return Math.floor(progress * 360);
+  }, [state.remainingTime, state.timerInputs.working]);
 
   return (
     <Background>
-      <div className="timer-border-line" />
-      <div className="timer-pointer" />
+      <Timeline
+        angle={angle}
+        timerStatus={state.timerStatus}
+        sessionStatus={state.sessionStatus}
+      />
 
-      <div className="timer-content">
-        <div className="align">
-          <div className="session">
-            <span className="session-label">セッション</span>
-            <span className="session-value">
+      <Inner>
+        <div className={styles.align}>
+          <div className={styles.session}>
+            <span className={styles.sessionLabel}>セッション</span>
+            <span className={styles.sessionValue}>
               <span>{state.currentSession}</span>
-              <span className="icon session-value-division">
-                <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24">
-                  <path d="M7 21L14.9 3H17L9.1 21H7Z" />
-                </svg>
+              <span className={styles.sessionValueDivision}>
+                <Icon type={"division"} width={16} height={16} />
               </span>
               <span>{state.timerInputs.session}</span>
             </span>
 
-            <span className="session-status">
-              <span className="icon-main">
-                <svg xmlns="http://www.w3.org/2000/svg" width={36} height={36} viewBox="0 0 24 24">
-                  <title>coffee-outline</title>
-                  <path d="M2,21V19H20V21H2M20,8V5H18V8H20M20,3A2,2 0 0,1 22,5V8A2,2 0 0,1 20,10H18V13A4,4 0 0,1 14,17H8A4,4 0 0,1 4,13V3H20M16,5H6V13A2,2 0 0,0 8,15H14A2,2 0 0,0 16,13V5Z" />
-                </svg>
-              </span>
-              <span>{formatSessionStatus(state.sessionStatus)}</span>
+            <span className={styles.sessionStatus}>
+              <Icon type={"coffie"} width={32} height={32} main />
+              <span>{sessionStatus}</span>
             </span>
           </div>
 
-          <div className="remaining-time">
+          <div className={styles.remainingTime}>
             <span>{minutes}</span>
-            <span className="remaining-time-divider">:</span>
+            <span className={styles.remainingTimeDivider}>:</span>
             <span>{seconds}</span>
           </div>
         </div>
-      </div>
+
+        <div className={styles.sessionControls}>
+          <div className={styles.sessionControlOuter}>
+            <button className={styles.circle} onClick={() => discardSession()}>
+              <Icon type={"stop"} width={32} height={32} main />
+            </button>
+
+            <PlayPause type={controls} play={() => play()} pause={() => pause()} />
+
+            <button className={styles.circle} onClick={() => skipSession()}>
+              <Icon type={"skip"} width={32} height={32} main />
+            </button>
+          </div>
+        </div>
+      </Inner>
     </Background>
   );
 };

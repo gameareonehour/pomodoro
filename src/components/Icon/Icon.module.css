@@ -1,0 +1,7 @@
+.iconMain {
+  fill: var(--text-secondary);
+}
+
+.icon {
+  fill: var(--text-sub);
+}

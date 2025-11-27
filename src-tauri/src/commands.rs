@@ -4,18 +4,22 @@ use std::path::PathBuf;
 
 #[tauri::command]
 pub fn play_sound(sound_type: &str) {
-    if let Some(path) = crate::commands::get_asset_path(sound_type) {
-        if let Ok(stream_handle) = OutputStreamBuilder::open_default_stream() {
-            let sink = Sink::connect_new(stream_handle.mixer());
+    let sound_type = sound_type.to_string();
 
-            if let Ok(f) = std::fs::File::open(&path) {
-                if let Ok(decoder) = rodio::Decoder::try_from(f) {
-                    sink.append(decoder);
-                    sink.sleep_until_end();
+    std::thread::spawn(move || {
+        if let Some(path) = crate::commands::get_asset_path(&sound_type) {
+            if let Ok(stream_handle) = OutputStreamBuilder::open_default_stream() {
+                let sink = Sink::connect_new(stream_handle.mixer());
+
+                if let Ok(f) = std::fs::File::open(&path) {
+                    if let Ok(decoder) = rodio::Decoder::try_from(f) {
+                        sink.append(decoder);
+                        sink.sleep_until_end();
+                    }
                 }
             }
         }
-    }
+    });
 }
 
 #[tauri::command]
