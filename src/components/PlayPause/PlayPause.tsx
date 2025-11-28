@@ -1,6 +1,6 @@
 import { FC } from "react";
+import { Icon } from "../Icon/Icon";
 import styles from "./PlayPause.module.css";
-import { Icon } from "../../../components/Icon/Icon";
 
 type Props = {
   type: "play" | "pause";
@@ -10,10 +10,13 @@ type Props = {
 
 export const PlayPause: FC<Props> = ({ type, play, pause }) => {
   return (
-    <span className={styles.playPause} onClick={() => {
-      type === "play" ? play() : pause()
-    }}>
+    <span
+      className={styles.playPause}
+      onClick={() => {
+        type === "play" ? play() : pause();
+      }}
+    >
       <Icon type={type} width={42} height={42} main />
     </span>
-  )
+  );
 };

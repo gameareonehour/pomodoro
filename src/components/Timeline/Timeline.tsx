@@ -14,7 +14,7 @@ export const Timeline: FC<{
       const orange = "#D05F10";
 
       if (timerStatus === "paused") {
-        return white
+        return white;
       }
 
       switch (sessionStatus) {

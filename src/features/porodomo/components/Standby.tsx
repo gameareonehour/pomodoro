@@ -57,11 +57,7 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
 
   return (
     <Background>
-      <Timeline
-        angle={0}
-        timerStatus={state.timerStatus}
-        sessionStatus={state.sessionStatus}
-      />
+      <Timeline angle={0} timerStatus={state.timerStatus} sessionStatus={state.sessionStatus} />
 
       <Inner>
         <div className={styles.modeSelection}>
@@ -115,10 +111,7 @@ export const Standby: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setVi
 
         <div className={styles.sessionControls}>
           <div className={styles.sessionControlOuter}>
-            <span
-              className={styles.sessionStartButton}
-              onClick={() => startSession()}
-            >
+            <span className={styles.sessionStartButton} onClick={() => startSession()}>
               <Icon type={"play"} width={38} height={38} main />
             </span>
             <span className={styles.sessionInputOuter}>

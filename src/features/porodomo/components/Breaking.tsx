@@ -1,131 +1,42 @@
-import { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef } from "react";
+import { Dispatch, FC, SetStateAction, useEffect } from "react";
 import { Background } from "../../../components/Background/Background";
-import { formatSessionStatus, nextView } from "../domain";
-import { formatTime } from "../../../shared";
 import { usePorodomo } from "../context";
 import { View } from "../../../types";
-import { invoke } from "@tauri-apps/api/core";
-import { PlayPause } from "./PlayPause";
+import { PlayPause } from "../../../components/PlayPause/PlayPause";
 import { Timeline } from "../../../components/Timeline/Timeline";
 import { Inner } from "../../../components/Inner/Inner";
 import { Icon } from "../../../components/Icon/Icon";
+import { usePorodomoTimer } from "../hooks/usePorodomoTimer";
 import styles from "./Breaking.module.css";
 
 export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
-  const { state, dispatch } = usePorodomo();
-  const isPlayedSound = useRef(false);
-  const intervalId = useRef<number | null>(null);
+  const { state } = usePorodomo();
 
-  const minutes = useMemo(() => {
-    return formatTime(Math.floor(state.remainingTime / 60));
-  }, [state.remainingTime]);
-
-  const seconds = useMemo(() => {
-    return formatTime(Math.round(state.remainingTime % 60));
-  }, [state.remainingTime]);
-
-  const sessionStatus = useMemo(() => {
-    return formatSessionStatus(state.sessionStatus);
-  }, [state.sessionStatus]);
-
-  const controls = useMemo(() => {
-    if (state.timerStatus === "running") {
-      return "pause";
-    } else {
-      return "play";
-    }
-  }, [state.timerStatus]);
-
-  const play = () => {
-    dispatch({ type: "updateTimer", value: "running" });
-  };
-
-  const pause = () => {
-    dispatch({ type: "updateTimer", value: "paused" });
-  };
-
-  const discardSession = () => {
-    void invoke("play_sound", { soundType: "done" });
-
-    dispatch({ type: "endSession" });
-    setView("porodomo:standby");
-  };
-
-  const skipSession = () => {
-    dispatch({ type: "skipSession" });
-  };
+  const {
+    minutes,
+    seconds,
+    sessionStatus,
+    controls,
+    angle,
+    play,
+    pause,
+    discardSession,
+    skipSession,
+    clearPorodomoTimer,
+  } = usePorodomoTimer({
+    phase: "breaking",
+    setView,
+  });
 
   useEffect(() => {
-    if (!isPlayedSound.current) {
-      isPlayedSound.current = true;
-      void invoke("play_sound", { soundType: "break" });
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (state.sessionStatus !== "shortBreak" && state.sessionStatus !== "longBreak") {
-      if (state.sessionStatus === "done") {
-        void invoke("play_sound", { soundType: "done" });
-        dispatch({ type: "endSession" });
-      }
-
-      const next = nextView(state.sessionStatus);
-      setView(next);
-
-      return;
-    }
-
-    intervalId.current = setInterval(() => {
-      dispatch({ type: "tick" });
-    }, 1000);
-
     return () => {
-      if (intervalId.current) {
-        clearInterval(intervalId.current);
-      }
+      clearPorodomoTimer();
     };
-  }, [state.sessionStatus]);
-
-  useEffect(() => {
-    if (state.timerStatus === "paused" && intervalId.current) {
-      clearInterval(intervalId.current);
-      intervalId.current = null;
-      return;
-    }
-
-    if (state.timerStatus === "running" && !intervalId.current) {
-      intervalId.current = setInterval(() => {
-        dispatch({ type: "tick" });
-      }, 1000);
-    }
-  }, [state.timerStatus]);
-
-  const angle = useMemo(() => {
-    // 作業完了の場合、ポインターの位置は360.
-    if (state.sessionStatus !== "shortBreak" && state.sessionStatus !== "longBreak") {
-      return 360;
-    }
-
-    const totalTime = state.sessionStatus === "shortBreak" ? state.timerInputs.shortBreak * 60 : state.sessionStatus === "longBreak" ? state.timerInputs.longBreak * 60 : 0;
-
-    // 作業開始の場合、ポインターの位置は0.
-    if (state.remainingTime === totalTime) {
-      return 0;
-    }
-
-    const elapsedTime = totalTime - state.remainingTime;
-    const progress = elapsedTime / totalTime;
-
-    return Math.floor(progress * 360);
-  }, [state.remainingTime, state.timerInputs.working]);
+  }, []);
 
   return (
     <Background>
-      <Timeline
-        angle={angle}
-        timerStatus={state.timerStatus}
-        sessionStatus={state.sessionStatus}
-      />
+      <Timeline angle={angle} timerStatus={state.timerStatus} sessionStatus={state.sessionStatus} />
 
       <Inner>
         <div className={styles.align}>
