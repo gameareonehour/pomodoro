@@ -116,6 +116,11 @@ export function usePorodomoTimer({ phase, setView }: UsePorodomoTimerOptions) {
     // 次フェーズに遷移した場合、表示を切り替え.
     // 画面遷移した場合に、クリア関数が呼ばれタイマーは自動停止する.
     if (!isScoped) {
+      if (state.sessionStatus === "done") {
+        playSound("done");
+        dispatch({ type: "endSession" });
+      }
+
       const next = nextView(state.sessionStatus);
       setView(next);
       return;
