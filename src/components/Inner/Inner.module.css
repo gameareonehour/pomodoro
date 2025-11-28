@@ -1,0 +1,11 @@
+.inner {
+  position: relative;
+  width: 78%;
+  height: 78%;
+  padding: 12px 28px 16px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+}

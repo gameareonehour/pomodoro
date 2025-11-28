@@ -1,83 +1,82 @@
-import { Dispatch, FC, SetStateAction, useEffect, useRef } from "react";
+import { Dispatch, FC, SetStateAction, useEffect } from "react";
 import { Background } from "../../../components/Background/Background";
-import { formatSessionStatus, nextView } from "../domain";
-import { formatTime } from "../../../utils";
 import { usePorodomo } from "../context";
 import { View } from "../../../types";
-import { invoke } from "@tauri-apps/api/core";
-import "./Breaking.css";
+import { PlayPause } from "../../../components/PlayPause/PlayPause";
+import { Timeline } from "../../../components/Timeline/Timeline";
+import { Inner } from "../../../components/Inner/Inner";
+import { Icon } from "../../../components/Icon/Icon";
+import { usePorodomoTimer } from "../hooks/usePorodomoTimer";
+import styles from "./Breaking.module.css";
 
 export const Breaking: FC<{ setView: Dispatch<SetStateAction<View>> }> = ({ setView }) => {
-  const { state, dispatch } = usePorodomo();
-  const isPlayedSound = useRef(false);
+  const { state } = usePorodomo();
 
-  const minutes = formatTime(Math.floor(state.remainingTime / 60));
-  const seconds = formatTime(Math.round(state.remainingTime % 60));
+  const {
+    minutes,
+    seconds,
+    sessionStatus,
+    controls,
+    angle,
+    play,
+    pause,
+    discardSession,
+    skipSession,
+    clearPorodomoTimer,
+  } = usePorodomoTimer({
+    phase: "breaking",
+    setView,
+  });
 
   useEffect(() => {
-    if (!isPlayedSound.current) {
-      isPlayedSound.current = true;
-      void invoke("play_sound", { soundType: "break" });
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (state.sessionStatus !== "shortBreak" && state.sessionStatus !== "longBreak") {
-      if (state.sessionStatus === "done") {
-        void invoke("play_sound", { soundType: "done" });
-        dispatch({ type: "endSession" });
-      }
-
-      const next = nextView(state.sessionStatus);
-      setView(next);
-
-      return;
-    }
-
-    const intervalId = setInterval(() => {
-      dispatch({ type: "tick" });
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [state.sessionStatus]);
+    return () => {
+      clearPorodomoTimer();
+    };
+  }, []);
 
   return (
     <Background>
-      <div className="timer-border-line" />
-      <div className="timer-pointer" />
+      <Timeline angle={angle} timerStatus={state.timerStatus} sessionStatus={state.sessionStatus} />
 
-      <div className="timer-content">
-        <div className="align">
-          <div className="session">
-            <span className="session-label">セッション</span>
-            <span className="session-value">
+      <Inner>
+        <div className={styles.align}>
+          <div className={styles.session}>
+            <span className={styles.sessionLabel}>セッション</span>
+            <span className={styles.sessionValue}>
               <span>{state.currentSession}</span>
-              <span className="icon session-value-division">
-                <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24">
-                  <path d="M7 21L14.9 3H17L9.1 21H7Z" />
-                </svg>
+              <span className={styles.sessionValueDivision}>
+                <Icon type={"division"} width={16} height={16} />
               </span>
               <span>{state.timerInputs.session}</span>
             </span>
 
-            <span className="session-status">
-              <span className="icon-main">
-                <svg xmlns="http://www.w3.org/2000/svg" width={36} height={36} viewBox="0 0 24 24">
-                  <title>coffee-outline</title>
-                  <path d="M2,21V19H20V21H2M20,8V5H18V8H20M20,3A2,2 0 0,1 22,5V8A2,2 0 0,1 20,10H18V13A4,4 0 0,1 14,17H8A4,4 0 0,1 4,13V3H20M16,5H6V13A2,2 0 0,0 8,15H14A2,2 0 0,0 16,13V5Z" />
-                </svg>
-              </span>
-              <span>{formatSessionStatus(state.sessionStatus)}</span>
+            <span className={styles.sessionStatus}>
+              <Icon type={"coffie"} width={32} height={32} main />
+              <span>{sessionStatus}</span>
             </span>
           </div>
 
-          <div className="remaining-time">
+          <div className={styles.remainingTime}>
             <span>{minutes}</span>
-            <span className="remaining-time-divider">:</span>
+            <span className={styles.remainingTimeDivider}>:</span>
             <span>{seconds}</span>
           </div>
         </div>
-      </div>
+
+        <div className={styles.sessionControls}>
+          <div className={styles.sessionControlOuter}>
+            <button className={styles.circle} onClick={() => discardSession()}>
+              <Icon type={"stop"} width={32} height={32} main />
+            </button>
+
+            <PlayPause type={controls} play={() => play()} pause={() => pause()} />
+
+            <button className={styles.circle} onClick={() => skipSession()}>
+              <Icon type={"skip"} width={32} height={32} main />
+            </button>
+          </div>
+        </div>
+      </Inner>
     </Background>
   );
 };
