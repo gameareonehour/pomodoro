@@ -4,7 +4,7 @@
 
 全セットが完了すると、かわいい女の子が褒めてくれます！
 
-![product-movie](./public/product.mp4)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/pcqUJ9E1jns?si=M0y3L5QeXbxD05_r" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 仕様
 
