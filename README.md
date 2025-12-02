@@ -1,5 +1,11 @@
 # pomodoro
 
+ただのタイマーです。作業時間/休憩時間 × セット数 をカウントしてくれます。
+
+全セットが完了すると、かわいい女の子が褒めてくれます！
+
+![product-movie](./public/product.mp4)
+
 ## 仕様
 
 - [UIデザイン](https://excalidraw.com/)
